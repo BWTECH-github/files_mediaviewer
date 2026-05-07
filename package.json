@@ -1,7 +1,8 @@
 {
   "name": "files_mediaviewer",
-  "version": "1.0.1",
-  "description": "Viewer for pictures and videos integrated in the files app",
+  "version": "1.1.0",
+  "description": "Viewer for pictures and videos integrated in the files app, modified by BW-Tech GmbH for owncloud.online PHP 8.4 compatibility.",
+  "modified-by": "BW-Tech GmbH",
   "dependencies": {
     "@types/moment-duration-format": "^2.2.7",
     "easygettext": "^2.17.0",
@@ -31,17 +32,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/owncloud/files_mediaviewer.git"
+    "url": "git+https://github.com/GrossLukas/files_mediaviewer.git"
   },
   "keywords": [
     "owncloud",
     "media",
     "gallery"
   ],
-  "author": "Felix Heidecke",
-  "license": "GPL-2.0",
+  "author": "ownCloud contributors, modified by BW-Tech GmbH",
+  "license": "GPL-2.0-only",
   "bugs": {
-    "url": "https://github.com/owncloud/files_mediaviewer/issues"
+    "url": "https://github.com/GrossLukas/files_mediaviewer/issues"
   },
-  "homepage": "https://github.com/owncloud/files_mediaviewer#readme"
+  "homepage": "https://github.com/GrossLukas/files_mediaviewer#readme"
 }

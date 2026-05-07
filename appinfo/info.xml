@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- Modified by BW-Tech GmbH for owncloud.online PHP 8.4 compatibility. -->
 <info>
 	<id>files_mediaviewer</id>
 	<name>Media Viewer</name>
@@ -14,21 +15,24 @@ A media viewer that adds image and video viewing capabilities to Files view and 
 - Sort images by name or date
 - Image and video download straight from the slideshow
 - Native SVG support
-- Mobile support</description>
+- Mobile support
+
+Modified by BW-Tech GmbH for owncloud.online and PHP 8.4 compatibility.</description>
 	<licence>GPLv2</licence>
-	<author>Felix Heidecke</author>
+	<author>ownCloud contributors, modified by BW-Tech GmbH</author>
 	<version>1.1.0</version>
 	<namespace>Mediaviewer</namespace>
 	<documentation>
-		<developer>https://github.com/owncloud/files_mediaviewer/blob/master/README.md</developer>
+		<developer>https://github.com/GrossLukas/files_mediaviewer/blob/master/README.md</developer>
 	</documentation>
 	<screenshot>https://raw.githubusercontent.com/owncloud/screenshots/master/files_mediaviewer/ownCloud-app-mediaviewer.jpg</screenshot>
 	<category>multimedia</category>
-	<website>https://github.com/owncloud/files_mediaviewer</website>
-	<bugs>https://github.com/owncloud/files_mediaviewer/issues</bugs>
-	<repository type="git">https://github.com/owncloud/files_mediaviewer.git</repository>
+	<website>https://github.com/GrossLukas/files_mediaviewer</website>
+	<bugs>https://github.com/GrossLukas/files_mediaviewer/issues</bugs>
+	<repository type="git">https://github.com/GrossLukas/files_mediaviewer.git</repository>
 	<dependencies>
-		<owncloud min-version="10" max-version="11"/>
+		<owncloud min-version="11" max-version="11.99"/>
+		<php min-version="8.4"/>
 	</dependencies>
 	<default_enable />
 </info>
