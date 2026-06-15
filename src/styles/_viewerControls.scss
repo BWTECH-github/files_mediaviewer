@@ -19,12 +19,17 @@
 		display: block;
 		position: absolute;
 		color: white;
+		// Eigene dunkle Backplate, damit weisser Dateiname auch ueber hellem
+		// Bildinhalt >=4,5:1 erreicht (WCAG 1.4.3) statt sich nur auf den Schatten zu verlassen
+		background: rgba(0, 0, 0, .6);
+		padding: 2px 8px;
+		border-radius: 3px;
 		transform: translate(-50%, -190%);
 		top: 0;
 		left: 50%;
 		white-space: nowrap;
 		font-size: 16px;
-		text-shadow: 
+		text-shadow:
 			1px  1px 1px black,
 			1px -1px 1px black,
 			-1px  1px 1px black,
@@ -87,7 +92,8 @@
 .viewer__controls {
 	position: absolute;
 	display: flex;
-	background: rgba(black, .5);
+	// Hintergrund deutlich opaker, damit weisser Text/Icons >=4,5:1 erreichen (WCAG 1.4.3)
+	background: rgba(black, .7);
 	left: 50%;
 	bottom: 0;
 	transform: translate(-50%, -25%);
@@ -103,9 +109,10 @@
 		right: 15px;
 	}
 
-	&:not(:hover) {
-		opacity: .5;
-	}
+	// Steuerleiste bleibt voll deckend (kein Element-opacity-Dimm im Ruhezustand):
+	// opacity auf dem Container wuerde den weissen Text/Icons mit abdunkeln und
+	// dadurch ueber hellem Bildinhalt unter 4,5:1 fallen. Der opake dunkle
+	// Hintergrund (rgba(black,.7)) sichert den Kontrast durchgehend (WCAG 1.4.3).
 
 	&__subgroup {
 		display: flex;
