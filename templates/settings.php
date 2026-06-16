@@ -1,6 +1,6 @@
 <?php
-style('user_ldap', 'files_mediaviewer');
-script('user_ldap', 'files_mediaviewer');
+// modified by BW-Tech GmbH: load media viewer settings from the correct app bundle.
+script('files_mediaviewer', 'files_mediaviewer');
 ?>
 
 <section id="files_mediaviewer">
