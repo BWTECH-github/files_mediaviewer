@@ -38,6 +38,15 @@
 
 	&__count {
 		color: white;
+		// Gleiche Textschatten-Behandlung wie das Nametag, damit der weisse
+		// Zaehler-/Zeit-Text auch ueber hellem Bildinhalt >=4,5:1 erreicht
+		// (WCAG 1.4.3); der opake Leisten-Hintergrund (rgba(black,.7)) sichert
+		// den Kontrast bereits, der Schatten ist die zusaetzliche Absicherung.
+		text-shadow:
+			1px  1px 1px black,
+			1px -1px 1px black,
+			-1px  1px 1px black,
+			-1px -1px 1px black;
 
 		@media (max-width: 360px) {
 			display: none;
@@ -55,7 +64,9 @@
 		width: 100%;
 		transform: translateY(-100%);
 		transition: height .25s;
-		background: rgba(0, 0, 0, 0.5);
+		// Track opaker, damit der Fortschrittsindikator unabhaengig vom
+		// dahinterliegenden Videoframe durchgehend >=3:1 erreicht (WCAG 1.4.11)
+		background: rgba(0, 0, 0, 0.7);
 
 		// Juicebar
 		> div {
@@ -65,6 +76,9 @@
 			bottom: 0;
 			width: 0%;
 			background-color: red;
+			// 1px-Kontrastkante, damit der gefuellte Bereich gegenueber dem
+			// ungefuellten Track immer >=3:1 abgesetzt bleibt (WCAG 1.4.11)
+			box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.7);
 		}
 	}
 }
