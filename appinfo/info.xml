@@ -20,7 +20,7 @@ A media viewer that adds image and video viewing capabilities to Files view and 
 Modified by BW-Tech GmbH for owncloud.online and PHP 8.4 compatibility.</description>
 	<licence>GPLv2</licence>
 	<author>ownCloud contributors, modified by BW-Tech GmbH</author>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<namespace>Mediaviewer</namespace>
 	<documentation>
 		<developer>https://github.com/GrossLukas/files_mediaviewer/blob/master/README.md</developer>
