@@ -23,13 +23,13 @@ Modified by BW-Tech GmbH for owncloud.online and PHP 8.4 compatibility.</descrip
 	<version>1.1.1</version>
 	<namespace>Mediaviewer</namespace>
 	<documentation>
-		<developer>https://github.com/GrossLukas/files_mediaviewer/blob/master/README.md</developer>
+		<developer>https://github.com/BWTECH-github/files_mediaviewer/blob/master/README.md</developer>
 	</documentation>
 	<screenshot>https://raw.githubusercontent.com/owncloud/screenshots/master/files_mediaviewer/ownCloud-app-mediaviewer.jpg</screenshot>
 	<category>multimedia</category>
-	<website>https://github.com/GrossLukas/files_mediaviewer</website>
-	<bugs>https://github.com/GrossLukas/files_mediaviewer/issues</bugs>
-	<repository type="git">https://github.com/GrossLukas/files_mediaviewer.git</repository>
+	<website>https://github.com/BWTECH-github/files_mediaviewer</website>
+	<bugs>https://github.com/BWTECH-github/files_mediaviewer/issues</bugs>
+	<repository type="git">https://github.com/BWTECH-github/files_mediaviewer.git</repository>
 	<dependencies>
 		<owncloud min-version="11" max-version="11.99"/>
 		<php min-version="8.4"/>
