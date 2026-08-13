@@ -25,9 +25,8 @@ Modified by BW-Tech GmbH for owncloud.online and PHP 8.4 compatibility.</descrip
 	<documentation>
 		<developer>https://github.com/BWTECH-github/files_mediaviewer/blob/master/README.md</developer>
 	</documentation>
-	<screenshot>https://raw.githubusercontent.com/owncloud/screenshots/master/files_mediaviewer/ownCloud-app-mediaviewer.jpg</screenshot>
 	<category>multimedia</category>
-	<website>https://github.com/BWTECH-github/files_mediaviewer</website>
+	<website>https://owncloud.online</website>
 	<bugs>https://github.com/BWTECH-github/files_mediaviewer/issues</bugs>
 	<repository type="git">https://github.com/BWTECH-github/files_mediaviewer.git</repository>
 	<dependencies>
