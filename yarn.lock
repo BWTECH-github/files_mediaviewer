@@ -1506,12 +1506,12 @@ cheerio@^1.0.0-rc.3:
     lodash "^4.15.0"
     parse5 "^3.0.1"
 
-chokidar@^4.0.0:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-4.0.3.tgz#7be37a4c03c9aee1ecfe862a4a23b2c70c205d30"
-  integrity sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==
+chokidar@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-5.0.0.tgz#949c126a9238a80792be9a0265934f098af369a5"
+  integrity sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==
   dependencies:
-    readdirp "^4.0.1"
+    readdirp "^5.0.0"
 
 chrome-trace-event@^1.0.2:
   version "1.0.2"
@@ -1993,10 +1993,10 @@ icss-utils@^5.0.0, icss-utils@^5.1.0:
   resolved "https://registry.yarnpkg.com/icss-utils/-/icss-utils-5.1.0.tgz#c6be6858abd013d768e98366ae47e25d5887b1ae"
   integrity sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==
 
-immutable@^5.0.2:
-  version "5.1.5"
-  resolved "https://registry.yarnpkg.com/immutable/-/immutable-5.1.5.tgz#93ee4db5c2a9ab42a4a783069f3c5d8847d40165"
-  integrity sha512-t7xcm2siw+hlUM68I+UEOK+z84RzmN59as9DZ7P1l0994DKUWV7UXBMQZVxaoMSRQ+PBZbHCOoBt7a2wxOMt+A==
+immutable@^5.1.5:
+  version "5.1.9"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-5.1.9.tgz#ac23c3a01992ab665e14ac9ffff298f28cd74a0c"
+  integrity sha512-m8nVez3rwrgmWxtLMt1ZYXB2Lv7OKYn/disyxAlSDYAlKSlFoPPfIAmAM/M5xqL4m4C/wAPw7S2/CNaUii1Hxg==
 
 import-local@^3.0.2:
   version "3.0.2"
@@ -2678,10 +2678,10 @@ readable-stream@^3.1.1:
     string_decoder "^1.1.1"
     util-deprecate "^1.0.1"
 
-readdirp@^4.0.1:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-4.1.2.tgz#eb85801435fbf2a7ee58f19e0921b068fc69948d"
-  integrity sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==
+readdirp@^5.0.0:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-5.1.1.tgz#520bca06f9d1ae1b96cc0800dbe84b983d19422c"
+  integrity sha512-Kko+Y5XQ6fM+Ce3dq3m9YGxnacYZYl9cA1wZjaF3Vbry2L3i1qVg8+CAgNPsXRArPMUMCaOR7oa9Nqntc43JKA==
 
 rechoir@^0.7.0:
   version "0.7.1"
@@ -2804,13 +2804,13 @@ sass-loader@^12.1.0:
     klona "^2.0.4"
     neo-async "^2.6.2"
 
-sass@^1.94.1:
-  version "1.94.1"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.94.1.tgz#79f726f2bdc347a387a954d4c967ac73efdb6676"
-  integrity sha512-/YVm5FRQaRlr3oNh2LLFYne1PdPlRZGyKnHh1sLleOqLcohTR4eUUvBjBIqkl1fEXd1MGOHgzJGJh+LgTtV4KQ==
+sass@^1.103.1:
+  version "1.103.1"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.103.1.tgz#13b70f5ff69288db956dc27d27c8fb79f3a27c61"
+  integrity sha512-9icZURbP51S6S0QGoyaeqk9uB06GNWxsFYWfH5RgpFgqK5FA8tJcM3AdVxrZEVJ7dz+L87nG95gBKf4VuaMHGw==
   dependencies:
-    chokidar "^4.0.0"
-    immutable "^5.0.2"
+    chokidar "^5.0.0"
+    immutable "^5.1.5"
     source-map-js ">=0.6.2 <2.0.0"
   optionalDependencies:
     "@parcel/watcher" "^2.4.1"
