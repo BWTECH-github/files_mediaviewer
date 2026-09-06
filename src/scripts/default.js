@@ -68,7 +68,10 @@ $(document).ready(() => {
 		el : '#files_mediaviewer > div',
 		router,
 		store : Store,
-		template: '<keep-alive><router-view>Was geht hier?</router-view></keep-alive>',
+		// Render-Funktion statt Laufzeit-Template: so kommt das Vue-Build ohne
+		// Template-Compiler aus. Der Slot-Text an <router-view> war wirkungslos,
+		// weil Vue Router 3 den Standard-Slot nicht rendert.
+		render: h => h('keep-alive', [h('router-view')]),
 		mixins : [IE11RouterFix],
 		data: {
 			name: 'Mediaviewer'
