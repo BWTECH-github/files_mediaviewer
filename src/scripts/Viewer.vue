@@ -182,11 +182,19 @@ export default {
 							activeMediaItem : fileList[this.activeIndex],
 							activeHTMLElement : $('.swiper-slide-active .viewer__media')
 						});
-						self.$router.push({
-							params: {
-								file : fileList[this.activeIndex].name
-							}
-						});
+						// Nur wenn wirklich eine andere Datei gemeint ist: bei
+						// einem einzelnen Bild feuert der Wechsel auch fuer
+						// die Datei, auf der die Adresse schon steht, und
+						// vue-router meldet das als Fehler ("Avoided redundant
+						// navigation to current location").
+						const naechste = fileList[this.activeIndex].name;
+						if (self.$route.params.file !== naechste) {
+							self.$router.push({
+								params: {
+									file : naechste
+								}
+							});
+						}
 						self.$bus.$emit('swiper:slideChangeTransitionEnd');
 
 						// --- pause all playing videos

@@ -18,7 +18,14 @@ const helper = {
 		},
 
 		closeViewer () {
-			this.$router.push('/');
+			// Steht die Adresse schon auf der Wurzel, waere der Sprung eine
+			// Navigation auf die eigene Stelle - vue-router meldet das als
+			// Fehler ("Avoided redundant navigation to current location").
+			// Ausgeloest wird das jedes Mal, wenn der Betrachter zweimal
+			// geschlossen wird (Escape und Klick daneben).
+			if (this.$route.path !== '/') {
+				this.$router.push('/');
+			}
 		},
 
 		getDisplayTime (time) {
