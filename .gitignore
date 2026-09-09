@@ -5,7 +5,15 @@
 .drone.yml
 /tests/output/
 
-/js/
+# Die gebauten Buendel gehoeren ausgeliefert: appinfo/app.php laedt
+# files_mediaviewer_init.js, und ohne diese Datei registriert die App keine
+# Dateiaktion - der Klick auf ein Bild tut dann gar nichts. Genau das war auf
+# der Testinstanz der Fall: /js/ war ignoriert, nur das grosse Buendel war per
+# "git add -f" drin, das init-Buendel fehlte.
+/js/*
+!/js/files_mediaviewer.js
+!/js/files_mediaviewer_init.js
+!/js/*.LICENSE.txt
 /css/
 /.DS_Store
 
