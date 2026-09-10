@@ -26,7 +26,15 @@ $(document).ready(function () {
 		OCA.Mediaviewer.files = context.fileList.files;
 
 		OC.addScript(app.name, app.name).then(() => {
-			OC.redirect(OC.joinPaths('#', app.name, fileName));
+			// Steht die Adresse schon auf diesem Anker, waere ein weiterer
+			// Sprung eine Navigation auf die eigene Stelle - vue-router meldet
+			// das als Fehler ("Avoided redundant navigation to current
+			// location"), sichtbar in der Konsole bei jedem Neuladen einer
+			// bereits geoeffneten Betrachteradresse.
+			const ziel = OC.joinPaths('#', app.name, fileName);
+			if (window.location.hash !== ziel) {
+				OC.redirect(ziel);
+			}
 		});
 	};
 
