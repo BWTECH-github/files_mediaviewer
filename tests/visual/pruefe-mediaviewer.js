@@ -314,9 +314,21 @@ async function knopf(seite, klasse) {
 	const leiste = await schmal.evaluate(() => {
 		const knoepfe = Array.from(document.querySelectorAll('#files_mediaviewer .viewer__controls--image button')).filter((b) => b.getClientRects().length > 0);
 		const aussen = knoepfe.filter((b) => { const r = b.getBoundingClientRect(); return r.left < 0 || r.right > window.innerWidth + 1 || r.bottom > window.innerHeight + 1; });
-		return { knoepfe: knoepfe.length, ausserhalb: aussen.map((b) => b.className).join(',') };
+		// verdeckt: an der Knopfmitte liegt etwas anderes (etwa die Reiterleiste)
+		const verdeckt = knoepfe.filter((b) => {
+			const r = b.getBoundingClientRect();
+			const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+			return !e || (e !== b && !b.contains(e));
+		});
+		return { knoepfe: knoepfe.length, ausserhalb: aussen.map((b) => b.className).join(','), verdeckt: verdeckt.map((b) => b.className).join(',') };
 	});
-	pruefe('400 px: alle Bedienknöpfe im Bild', leiste.knoepfe >= 6 && leiste.ausserhalb === '', JSON.stringify(leiste));
+	pruefe('400 px: alle Bedienknöpfe im Bild und nicht verdeckt', leiste.knoepfe >= 6 && leiste.ausserhalb === '' && leiste.verdeckt === '', JSON.stringify(leiste));
+	const mitte = await schmal.evaluate(() => {
+		const b = document.querySelector('#files_mediaviewer .swiper-slide-active .viewer__media');
+		const r = b ? b.getBoundingClientRect() : null;
+		return r ? Math.round(Math.abs((r.top + r.bottom) / 2 - window.innerHeight / 2)) : null;
+	});
+	pruefe('Bild sitzt senkrecht mittig (kein 45-px-Versatz)', mitte !== null && mitte <= 3, mitte);
 	await schmal.close();
 
 	// --- öffentlicher Ordner-Link -----------------------------------------------

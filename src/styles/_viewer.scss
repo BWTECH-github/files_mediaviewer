@@ -1,6 +1,9 @@
+// top 0 statt 45px: Im alten Kern lag die 45-px-Kopfleiste über dem Overlay
+// (z-index 2000), im Redesign liegt das Overlay über allem – der Versatz
+// ließ nur einen leeren Streifen und rückte Bild und Video aus der Mitte.
 .viewer {
 	position: absolute;
-	top: 45px;
+	top: 0;
 	right: 0;
 	bottom: 0;
 	left: 0;
@@ -31,7 +34,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		height: calc(100vh - 45px) !important;
+		height: 100vh !important;
 		flex-shrink: 0;
 		position: relative;
 

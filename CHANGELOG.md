@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 Redesign-Linie (owncloud.online Redesign 11.1). Nur im Zweig `redesign`.
 Im Redesign-Kern Ende zu Ende geprüft (tests/visual/pruefe-mediaviewer.js,
-23/23; die Probe erzeugt PNG, JPEG und WebM selbst im Browser).
+24/24; die Probe erzeugt PNG, JPEG und WebM selbst im Browser).
 
 ### Fixed
 
@@ -20,6 +20,13 @@ Im Redesign-Kern Ende zu Ende geprüft (tests/visual/pruefe-mediaviewer.js,
 - Herunterladen aus dem Betrachter bei Dateinamen mit `#`, `&` oder `?`: Die
   Adresse wurde ohne Kodierung aufgerufen, der Browser landete auf einer
   404-Seite und verließ die Dateiliste. Pfad jetzt wie beim Abspielen kodiert.
+- Telefon: Die mobile Reiterleiste des Redesigns (z-index 2800) lag über dem
+  Betrachter (1000) und verdeckte die ganze Steuerleiste – Blättern, Drehen,
+  Zoom, Herunterladen, Schließen. Der Betrachter liegt jetzt darüber (2850),
+  unter Menü und Meldungen.
+- Oben blieb ein leerer 45-px-Streifen (Versatz für die alte Kopfleiste, die
+  im Redesign unter dem Overlay liegt); Bild und Video saßen 23 px unter der
+  Mitte.
 
 ### Changed
 

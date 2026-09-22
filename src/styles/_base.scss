@@ -1,5 +1,5 @@
-// fixed statt absolute ohne top/left: Der Container haengt am Ende des Body.
-// Baut die Seite davor echte Hoehe auf (Redesign, auch die oeffentliche
+// fixed statt absolute ohne top/left: Der Container hängt am Ende des Body.
+// Baut die Seite davor echte Höhe auf (Redesign, auch die öffentliche
 // Linkseite), lag das Overlay unterhalb des sichtbaren Bereichs und der
 // Betrachter blieb unsichtbar.
 .wrapper {
@@ -10,7 +10,9 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
-	z-index: 1000;
+	// über der mobilen Reiterleiste des Redesigns (2800), die sonst die
+	// Steuerleiste verdeckte; unter Menü (3000) und Meldungen (3300)
+	z-index: 2850;
 	overflow: hidden;
 	user-select: none;
 
