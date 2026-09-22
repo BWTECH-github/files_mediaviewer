@@ -1,8 +1,8 @@
 SHELL := /bin/bash
 
-YARN := $(shell command -v yarn 2> /dev/null)
-ifndef YARN
-    $(error yarn is not available on your system, please install yarn)
+NPM := $(shell command -v npm 2> /dev/null)
+ifndef NPM
+    $(error npm is not available on your system, please install Node.js)
 endif
 GIT := $(shell command -v git 2> /dev/null)
 ifndef GIT
@@ -45,11 +45,11 @@ dist: js-deps build-js distdir sign package
 
 .PHONY: js-deps
 js-deps:
-	$(YARN) install
+	$(NPM) ci
 
 .PHONY: build-js
 build-js:
-	$(YARN) run build
+	$(NPM) run build < /dev/null
 
 .PHONY: distdir
 distdir:
@@ -82,17 +82,3 @@ l10n-clean:
 l10n-read: js-deps
 	cd l10n && make makemessages
 
-.PHONY: l10n-write
-l10n-write: l10n/l10n.pl
-	perl l10n/l10n.pl files_mediaviewer write
-
-.PHONY: l10n-push
-l10n-push:
-	cd l10n && tx push -s
-
-.PHONY: l10n-pull
-l10n-pull:
-	cd l10n && tx pull -a --minimum-perc=15
-
-l10n/l10n.pl:
-	wget -qO l10n/l10n.pl https://rawgit.com/ownclouders/7f3e2bdf09e6c7258850d770c0edaf0b/raw/d3ad1673b5449900f85a04f95cdf7e7149140c4f/l10n.pl

@@ -13,5 +13,29 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    uses: owncloud/reusable-workflows/.github/workflows/build.yml@main
+  dist:
+    name: Build dist tarball
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      # "make dist" baut die Bündel mit npm ci / npm run build neu, kopiert
+      # appinfo, js, l10n, templates, README, LICENSE und CHANGELOG und
+      # signiert nur, wenn Schlüssel und occ vorhanden sind – im CI nie.
+      - name: Build dist tarball
+        run: make dist
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: files_mediaviewer-dist
+          path: build/dist/files_mediaviewer.tar.gz
+          if-no-files-found: error

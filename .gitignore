@@ -2,7 +2,6 @@
 /build/
 /vendor/
 .php_cs.cache
-.drone.yml
 /tests/output/
 
 # Die gebauten Buendel gehoeren ausgeliefert: appinfo/app.php laedt
@@ -20,8 +19,6 @@
 /l10n/files_mediaviewer.pot
 *.po
 
-# Generated from .drone.star
-.drone.yml
 
 # IDE Cache
 .idea

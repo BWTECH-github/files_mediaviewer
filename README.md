@@ -73,7 +73,7 @@ sie benötigen ebenfalls `imagick`.
   der Dateiliste das allgemeine Video-Symbol stehen; der Viewer spielt die
   Datei trotzdem ab.
 - Ein Browser, der den jeweiligen Video-Codec beherrscht.
-- Node.js und yarn nur dann, wenn Sie die App aus dem Quelltext bauen.
+- Node.js und npm nur dann, wenn Sie die JavaScript-Bündel selbst neu bauen.
 
 ## Installation
 
@@ -86,18 +86,15 @@ Aus dem Quelltext:
 cd /var/www/owncloud.online/apps
 git clone https://github.com/BWTECH-github/files_mediaviewer.git
 cd files_mediaviewer
-yarn install && yarn build
 chown -R www-data:www-data .
 sudo -u www-data php8.4 ../../occ app:enable files_mediaviewer
 ```
 
-Die App hat keine `composer.json`, ein `composer install` entfällt. Der
-Schritt `yarn install && yarn build` ist dagegen zwingend: Das Repository
-enthält nicht alle fertigen JavaScript-Bündel. Insbesondere
-`js/files_mediaviewer_init.js` entsteht erst beim Bauen; ohne diese Datei
-lädt zwar die App, es wird aber keine einzige Dateiaktion registriert und der
-Viewer öffnet nie. Alternativ kopieren Sie das Verzeichnis eines gebauten
-Pakets an dieselbe Stelle.
+Die App hat keine `composer.json`, ein `composer install` entfällt. Die
+gebauten JavaScript-Bündel (`js/files_mediaviewer.js`,
+`js/files_mediaviewer_init.js`) liegen im Repository. Wer die Quellen unter
+`src/` ändert, baut sie mit `npm ci && npm run build` neu und checkt die
+Bündel mit ein.
 
 In `appinfo/info.xml` ist `default_enable` gesetzt. Bei einer Neuinstallation
 des Servers ist die App daher bereits aktiv; `app:enable` ist dann nicht mehr
@@ -158,7 +155,7 @@ Dateiansicht neu laden.
 | Symptom | Ursache | Abhilfe |
 | ------- | ------- | ------- |
 | Der Klick auf ein Bild lädt die Datei herunter, der Viewer öffnet nicht. | Für diesen Mime-Typ ist kein Vorschau-Anbieter registriert, deshalb legt die App keine Dateiaktion an. | Passenden Anbieter in `enabledPreviewProviders` eintragen, gegebenenfalls `imagick` installieren, Seite neu laden. |
-| Nach `git clone` reagiert die App gar nicht. | `js/files_mediaviewer_init.js` ist ein Bauartefakt und liegt nicht im Repository. | `yarn install && yarn build` ausführen oder das Paket aus dem Markt verwenden. |
+| Nach `git clone` reagiert die App gar nicht. | Ein Bündel unter `js/` fehlt oder passt nicht zu `src/` (lokal geändert, nicht neu gebaut). | `npm ci && npm run build` ausführen oder das Paket aus dem Markt verwenden. |
 | Viewer öffnet, das Bild bleibt leer, Meldung „Failed to load image data“. | Der Vorschau-Endpunkt antwortet mit 404, etwa weil `enable_previews` auf `false` steht oder für diese Datei keine Vorschau erzeugt werden kann. | `enable_previews` und die Anbieterliste prüfen, danach das Server-Log auswerten. |
 | Ein Video hat keine Dateiaktion, der Klick lädt es herunter. | Der Browser meldet den Codec als nicht abspielbar, oder der Mime-Typ gehört nicht zu den vier unterstützten Videotypen. Beim ersten Fall bleibt die Datei in der Slideshow erreichbar, spielt dort aber nicht ab. | Datei nach MP4 (H.264/AAC) umwandeln oder einen Browser mit passendem Codec verwenden. |
 | Video startet nicht, Meldung „Failed to load video data“. | Der direkte Abruf der Datei schlägt fehl — angemeldet über `remote.php/webdav`, im öffentlichen Link über `/s/<token>/download` —, etwa durch einen Proxy ohne Unterstützung für Teilabrufe (Range) oder durch fehlende Leserechte. | Proxy-Konfiguration und Freigaberechte prüfen. |
@@ -167,8 +164,8 @@ Dateiansicht neu laden.
 
 ## Herkunft
 
-Die App geht auf `files_mediaviewer` der ownCloud GmbH und deren Mitwirkende
-zurück. Sie wurde von der BW-Tech GmbH für owncloud.online und PHP 8.4
+Die App geht auf die Upstream-App `files_mediaviewer` (Felix Heidecke u. a.)
+zurück; die Urheberrechtsvermerke in den Quelldateien bleiben unverändert. Sie wurde von der BW-Tech GmbH für owncloud.online und PHP 8.4
 angepasst. Lizenz: GPL Version 2 (siehe `LICENSE`).
 
 Quelltext und Fehlermeldungen:
