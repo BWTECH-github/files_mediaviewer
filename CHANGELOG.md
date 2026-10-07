@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.1] - 2026-10-07
+
+### Fixed
+
+- Sprache: Die Fehlermeldungen „Failed to load image data“ und „Failed to load video data“ (Bild bzw. Video lässt sich nicht laden) fehlten in de, de_DE und de_CH und erschienen englisch. Das Bündel ruft sie zur Laufzeit über `t('files_mediaviewer', …)` ab; ein Neubau ist nicht nötig.
+- Aus main 1.1.4 übernommen: genauerer Kommentar zur Kodierung des Download-Pfads (Code unverändert, steckte schon in 2.0.0).
+
 ## [2.0.0] - 2026-09-22
 
 Redesign-Linie (owncloud.online Redesign 11.1). Nur im Zweig `redesign`.
