@@ -37,8 +37,9 @@ export default {
 				);
 
 				// Pfad kodieren wie beim Abspielen (Viewer.vue): unkodiert
-				// schnitt "#" im Dateinamen die Adresse ab, "&" und "?" ebenso -
-				// der Download landete auf einer 404-Seite statt der Datei.
+				// schnitten "#" und "?" im Datei- oder Ordnernamen die Adresse ab,
+				// "%" verfälschte sie - der Download landete auf einer 404-Seite
+				// statt der Datei.
 				webdavPath = OC.encodePath(path);
 			}
 

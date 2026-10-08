@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.1] - 2026-10-07
+
+### Fixed
+
+- Sprache: Die Fehlermeldungen „Failed to load image data“ und „Failed to load video data“ (Bild bzw. Video lässt sich nicht laden) fehlten in de, de_DE und de_CH und erschienen englisch. Das Bündel ruft sie zur Laufzeit über `t('files_mediaviewer', …)` ab; ein Neubau ist nicht nötig.
+- Aus main 1.1.4 übernommen: genauerer Kommentar zur Kodierung des Download-Pfads (Code unverändert, steckte schon in 2.0.0).
+
 ## [2.0.0] - 2026-09-22
 
 Redesign-Linie (owncloud.online Redesign 11.1). Nur im Zweig `redesign`.
@@ -35,6 +42,13 @@ Im Redesign-Kern Ende zu Ende geprüft (tests/visual/pruefe-mediaviewer.js,
   dist.yml baut selbst statt über fremde wiederverwendbare Workflows.
 - info.xml-Autor BW-Tech GmbH, Paketlinks auf BWTECH-github, CHANGELOG-Verweise
   als "Upstream #N", tote Transifex-Konfiguration (l10n/.tx) entfernt.
+
+## [1.1.4] - 2026-09-24
+
+### Fixed
+
+- Herunterladen aus dem Betrachter bei Datei- oder Ordnernamen mit „#“, „?“ oder „%“: Die WebDAV-Adresse wurde unkodiert aufgerufen, „#“ und „?“ schnitten sie ab, „%“ verfälschte sie; der Browser landete auf einer 404-Seite und verließ die Dateiliste. Der Pfad wird jetzt mit OC.encodePath kodiert, wie schon beim Abspielen. Geprüft mit den Kernfunktionen aus core/js/js.js gegen das alte und das neue Bündel („&“ im Pfad war schon vorher unkritisch). Rückportiert aus der Redesign-Linie (nur dieser Teil, ohne Oberflächenänderungen).
+- Nach dem Paket 1.1.3 in main hinzugekommen und bisher ohne eigene Versionsnummer (main trug weiter 1.1.3): Das gebaute init-Bündel wird mitgeliefert (ohne es registrierte die App keine Dateiaktion), gebaute Bündel liegen im Repository, und der Betrachter springt nicht mehr auf die Adresse, auf der er schon steht (Konsolenfehler „Avoided redundant navigation“ beim Neuladen, bei einem einzelnen Bild und beim zweiten Schließen).
 
 ## [1.1.3] - 2026-08-13
 
