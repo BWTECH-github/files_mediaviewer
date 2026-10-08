@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.2] - 2026-10-08
+
+### Behoben
+
+- Der Dateiname über der Steuerleiste bricht um und wächst nach oben, statt
+  bei 320–768 px links und rechts aus dem Fenster zu ragen. Quelle
+  (src/styles/_viewerControls.scss) und eingechecktes Bündel sind gleich
+  geändert; ein Neubau des Bündels war mit den vorhandenen node_modules nicht
+  bitgleich und hätte das ganze Bündel umgestellt.
+- Der Schleier hinter dem Betrachter ist zu 90 % statt 75 % deckend: Die
+  Dateiliste schien durch, ihre Namen lagen unter Namensschild und Zähler
+  der Steuerleiste (Text über Text bei 1024–1280 px).
+
 ## [2.0.0] - 2026-09-22
 
 Redesign-Linie (owncloud.online Redesign 11.1). Nur im Zweig `redesign`.

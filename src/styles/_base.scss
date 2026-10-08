@@ -16,7 +16,10 @@
 	overflow: hidden;
 	user-select: none;
 
+	// .9 statt .75: Bei 75 % schien die Dateiliste durch, und ihre Namen
+	// lagen sichtbar unter Namensschild und Zähler der Steuerleiste (Text über
+	// Text, gemessen bei 1024–1280 px).
 	background: {
-		color: rgba(black, .75);
+		color: rgba(black, .9);
 	}
 }
