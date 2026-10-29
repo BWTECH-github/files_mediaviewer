@@ -56,7 +56,6 @@ const helper = {
 
 const directive = {
 	bind(el, binding) {
-		console.log(binding.value, el.innerText.trim());
 		el.innerText = t('files_mediaviewer', el.innerText.trim());
 	}
 };

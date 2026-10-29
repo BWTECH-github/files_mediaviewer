@@ -68,12 +68,9 @@ export default {
 					clearInterval(recheck);
 				}
 			}, 1000);
-
-			if (Object.keys(this.$image.getEventListeners()).length === 0) {
-				this.$image.addEventListener('error', () => {
-					OC.Notification.show( this.t('Failed to load image data'), {type: 'error', timeout: 15})
-				})
-			}
+			// Ladefehler meldet der Betrachter selbst im Bild (Viewer.vue,
+			// markFailed): die frühere Meldung hing am error-Ereignis, das bei
+			// kaputten Bildern meist schon vor dem Anmelden gefeuert hatte.
 		}
 	},
 	mounted () {

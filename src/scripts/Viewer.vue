@@ -1,14 +1,15 @@
 <template>
-	<div class="wrapper" @click.stop="_closeViewer($event)">
+	<div class="wrapper" role="dialog" aria-modal="true" :aria-label="dialogLabel" tabindex="-1" @click.stop="_closeViewer($event)">
 		<div class="viewer">
 			<div class="viewer__container">
 				<div class="viewer__wrapper">
-					<div class="viewer__slide" v-for="(slide, index) in list" :key="index">
-						<img v-if="getType(slide) === 'image' && shouldRender(index)" class="viewer__media viewer__media--image" :src="thumbPath(slide)" :alt="slide.name">
+					<div class="viewer__slide" v-for="(slide, index) in list" :key="index" :aria-hidden="index === swiper.activeIndex ? null : 'true'">
+						<img v-if="getType(slide) === 'image' && shouldRender(index)" class="viewer__media viewer__media--image" :class="{ 'viewer__media--failed' : isFailed(slide) }" :src="thumbPath(slide)" :alt="slide.name" @error="markFailed(slide)">
+						<p v-if="getType(slide) === 'image' && isFailed(slide)" class="viewer__failed" role="alert" v-text="t('Failed to load image data')"></p>
 						<video v-if="getType(slide) === 'video' && shouldRender(index)" class="viewer__media viewer__media--video" :controls="isFullscreen" :class="{ 'viewer__media--video-paused' : isPaused }" preload="metadata">
 							<source :src="webdavPath(index, slide)" :type="slide.mimetype">
 						</video>
-						<img v-if="!shouldRender(index)" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" />
+						<img v-if="!shouldRender(index)" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="" />
 					</div>
 				</div>
 			</div>
@@ -29,10 +30,65 @@ export default {
 			swiper : {
 				activeIndex : 0
 			},
-			list : null
+			list : null,
+			// Bilder, deren Vorschau der Server nicht liefern konnte (Name -> true)
+			failed : {}
 		};
 	},
 	methods: {
+		isFailed (item) {
+			return this.failed[item.name] === true;
+		},
+		// Kaputte oder nicht darstellbare Bilder: statt des zerbrochenen
+		// Bildsymbols erklärt eine Meldung im Betrachter, was los ist.
+		markFailed (item) {
+			this.$set(this.failed, item.name, true);
+		},
+		// Bedienbare Elemente des Betrachters in Tab-Reihenfolge
+		focusables () {
+			return Array.from(this.$el.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"]), video[controls]'))
+				.filter((el) => !el.disabled && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden' && !el.closest('[aria-hidden="true"]'));
+		},
+		// Modaler Dialog: Tab und Umschalt+Tab bleiben im Betrachter, statt in
+		// die verdeckte Dateiliste dahinter zu wandern.
+		_trapFocus (e) {
+			if (e.key !== 'Tab' || !this.$el || !this.$el.isConnected) {
+				return;
+			}
+			const items = this.focusables();
+			if (items.length === 0) {
+				e.preventDefault();
+				this.$el.focus();
+				return;
+			}
+			const first = items[0];
+			const last = items[items.length - 1];
+			const active = document.activeElement;
+			if (!this.$el.contains(active)) {
+				e.preventDefault();
+				(e.shiftKey ? last : first).focus();
+			}
+			else if (e.shiftKey && (active === first || active === this.$el)) {
+				e.preventDefault();
+				last.focus();
+			}
+			else if (!e.shiftKey && active === last) {
+				e.preventDefault();
+				first.focus();
+			}
+		},
+		// Nach dem Schließen zurück zur Zeile der zuletzt gezeigten Datei, damit
+		// Tastaturnutzer in der Liste dort weitermachen, wo sie waren.
+		_restoreFocus (name) {
+			if (!name) {
+				return;
+			}
+			const zeile = Array.from(document.querySelectorAll('#fileList tr[data-file]')).find((tr) => tr.getAttribute('data-file') === name);
+			const ziel = zeile ? (zeile.querySelector('a.name') || zeile) : null;
+			if (ziel && typeof ziel.focus === 'function') {
+				ziel.focus();
+			}
+		},
 		_closeViewer () {
 			// Handmade propagation stopper
 			if ($(event.target).hasClass('viewer__slide'))
@@ -206,14 +262,21 @@ export default {
 			this.$nextTick(() => {
 				// FF and IE11 Fix
 				this.swiper.update();
+				// Fokus in den Dialog, damit Tastatur und Sprachausgabe dort
+				// ankommen und nicht in der verdeckten Dateiliste bleiben
+				this.$el.focus({ preventScroll : true });
 			});
 		});
+		document.addEventListener('keydown', this._trapFocus, true);
 	},
-
 	deactivated () {
+		document.removeEventListener('keydown', this._trapFocus, true);
+		const zuletzt = this.$store.state.activeMediaItem && this.$store.state.activeMediaItem.name;
 		this.swiper.destroy();
 		this.$store.dispatch('resetAll');
 		this.list = null;
+		this.failed = {};
+		this._restoreFocus(zuletzt);
 	},
 
 	mounted () {
@@ -237,6 +300,10 @@ export default {
 	},
 
 	computed: {
+		dialogLabel () {
+			const item = this.$store.state.activeMediaItem;
+			return (item && item.name) ? item.name : this.t('Loading');
+		},
 		slideIsVideo () {
 			return this.$store.getters.itemType === 'video';
 		},

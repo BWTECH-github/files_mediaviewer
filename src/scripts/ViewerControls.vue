@@ -17,6 +17,10 @@ export default {
 	mounted () {
 		// Keyboard controls for swiping and closing
 		$(document).on('keyup', (e) => {
+			// Pfeiltasten auf der Zeitleiste spulen das Video, sie blättern nicht
+			if (e.target && e.target.closest && e.target.closest('[role=slider], input, textarea, select, [contenteditable]')) {
+				return;
+			}
 			if (e.which === 39 && this.isActive) {
 				this.$bus.$emit('swiper:slideTo', 'next');
 			}

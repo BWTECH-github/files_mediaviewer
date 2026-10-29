@@ -47,6 +47,7 @@
 
 	&__count {
 		color: white;
+		white-space: nowrap;
 		// Gleiche Textschatten-Behandlung wie das Nametag, damit der weisse
 		// Zaehler-/Zeit-Text auch ueber hellem Bildinhalt >=4,5:1 erreicht
 		// (WCAG 1.4.3); der opake Leisten-Hintergrund (rgba(black,.7)) sichert
@@ -65,6 +66,7 @@
 	// -- Video controls
 
 	&__scrubber {
+		cursor: pointer;
 		position: absolute;
 		left: 0;
 		right: 0;
@@ -76,6 +78,13 @@
 		// Track opaker, damit der Fortschrittsindikator unabhaengig vom
 		// dahinterliegenden Videoframe durchgehend >=3:1 erreicht (WCAG 1.4.11)
 		background: rgba(0, 0, 0, 0.7);
+
+		// Tastaturfokus der Zeitleiste (Schieberegler) sichtbar
+		&:focus-visible {
+			outline: 2px solid white;
+			outline-offset: 2px;
+			height: 15px;
+		}
 
 		// Juicebar
 		> div {
@@ -155,5 +164,14 @@
 
 	@media (max-width: 650px) {
 		min-width: 100%
+	}
+
+	// Auf schmalen Telefonen passt die Videoleiste nicht in eine Zeile: Sie
+	// bricht in zwei Zeilen um, statt Zähler und Zeit in Einzelteile zu zerreißen.
+	&--video {
+		@media (max-width: 480px) {
+			flex-wrap: wrap;
+			justify-content: center;
+		}
 	}
 }

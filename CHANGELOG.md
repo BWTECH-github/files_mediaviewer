@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.3] - 2026-10-29
+
+### Behoben
+
+- Der Betrachter ist ein modaler Dialog: Der Fokus springt beim Öffnen hinein,
+  Tab bleibt im Betrachter, nach dem Schließen steht der Fokus wieder auf der
+  Datei in der Liste.
+- Dateinamen mit „#“, „&“ oder „%“ öffnen das angeklickte Bild.
+- Bilder ohne darstellbare Vorschau zeigen im Betrachter die Meldung
+  „Bilddaten konnten nicht geladen werden“.
+- Video: Zeitleiste per Tastatur bedienbar (Pfeile, Bild auf/ab, Pos1/Ende),
+  Abspiel- und Tonknopf melden ihren Zustand, die Leiste bricht auf schmalen
+  Telefonen in zwei Zeilen um.
+- Deutsch: „Um 90° gegen den Uhrzeigersinn drehen“ und „Wiederholen“.
+
 ## [2.0.2] - 2026-10-08
 
 ### Behoben

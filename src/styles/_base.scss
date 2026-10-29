@@ -16,6 +16,12 @@
 	overflow: hidden;
 	user-select: none;
 
+	// Der Dialog selbst bekommt beim Öffnen den Fokus (für die Sprachausgabe);
+	// einen Rahmen um das ganze Fenster braucht es dafür nicht.
+	&:focus {
+		outline: none;
+	}
+
 	// .9 statt .75: Bei 75 % schien die Dateiliste durch, und ihre Namen
 	// lagen sichtbar unter Namensschild und Zähler der Steuerleiste (Text über
 	// Text, gemessen bei 1024–1280 px).

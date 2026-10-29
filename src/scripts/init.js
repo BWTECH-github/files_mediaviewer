@@ -31,7 +31,10 @@ $(document).ready(function () {
 			// das als Fehler ("Avoided redundant navigation to current
 			// location"), sichtbar in der Konsole bei jedem Neuladen einer
 			// bereits geoeffneten Betrachteradresse.
-			const ziel = OC.joinPaths('#', app.name, fileName);
+			// Name kodieren: "#", "?", "&" oder "%" im Dateinamen schnitten die
+			// Route sonst ab, und der Betrachter zeigte das erste Medium statt
+			// des angeklickten.
+			const ziel = '#/' + app.name + '/' + encodeURIComponent(fileName);
 			if (window.location.hash !== ziel) {
 				OC.redirect(ziel);
 			}
