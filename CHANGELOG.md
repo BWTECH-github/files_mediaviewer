@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.4] - 2026-11-01
+
+### Behoben
+
+- Eine aufgerufene oder neu geladene Betrachteradresse
+  (`#/files_mediaviewer/<Datei>`) öffnet das Medium von selbst, auch auf der
+  Linkseite.
+- Zurück und Vorwärts im Browser öffnen, wechseln und schließen den
+  Betrachter; die Dateiliste bleibt dabei im Ordner.
+- Schließen entfernt den Betrachteranker aus der Adresse.
+
 ## [2.0.3] - 2026-10-29
 
 ### Behoben

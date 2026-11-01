@@ -6,8 +6,9 @@
  * öffentlichen Link an und räumt beides wieder weg.
  *
  * Geprüft wird:
- *   - Medienbetrachter für Bilder angeboten (mit gallery fragt der Kern
- *     nach), für Video Standard
+ *   - Medienbetrachter für Bilder angeboten und Standard (gallery tritt ab
+ *     17.0.2 für diese Typen zurück, der Kern fragt nicht nach), für Video
+ *     Standard
  *   - Öffnen aus der Dateiliste: Betrachter liegt obenauf, Bild geladen,
  *     Name und Zähler stimmen
  *   - Vor/Zurück per Knopf und Pfeiltaste, alle Medien des Ordners erreichbar
@@ -15,7 +16,9 @@
  *   - Video: Abspielen, Stumm, Neustart
  *   - Herunterladen, auch bei Namen mit # und &
  *   - Schließen per Knopf und Escape, Adresse wieder ohne Anker
- *   - Öffnen bei bereits gesetzter Betrachteradresse ohne Routerfehler
+ *   - Betrachteradresse: Direkteinstieg und Neuladen öffnen das Medium von
+ *     selbst, Zurück/Vorwärts folgt der Betrachter, die Liste bleibt im
+ *     Ordner, ohne Routerfehler
  *   - öffentlicher Ordner-Link: Bild (obenauf) und Video
  *   - 400 px: Bedienleiste im Bild
  *   - keine Konsolenfehler
@@ -97,8 +100,8 @@ async function warteAufName(seite, name) {
 
 /**
  * Öffnet eine Datei aus der Liste. Bieten mehrere Apps einen Betrachter an
- * (hier auch gallery für Bilder), fragt der Kern "Wie möchtest du diese Datei
- * öffnen?" – dann den Medienbetrachter wählen.
+ * (gallery vor 17.0.2), fragt der Kern "Wie möchtest du diese Datei
+ * öffnen?" – dann den Medienbetrachter wählen. Gibt zurück, ob gefragt wurde.
  */
 async function oeffne(seite, datei) {
 	const zeile = seite.locator('#fileList tr[data-file="' + datei + '"]');
@@ -195,7 +198,7 @@ async function knopf(seite, klasse) {
 
 	// --- öffnen ------------------------------------------------------------------
 	const auswahl = await oeffne(seite, BILD);
-	pruefe('Bild: Kern fragt nach dem Betrachter (gallery ebenfalls aktiv)', auswahl === true);
+	pruefe('Bild: Klick öffnet den Medienbetrachter ohne Auswahlmenü', auswahl === false);
 	await seite.waitForSelector('#files_mediaviewer .wrapper', { state: 'visible', timeout: 20000 }).catch(() => {});
 	await warteAufName(seite, BILD);
 	let z = await betrachterZustand(seite);
@@ -289,19 +292,43 @@ async function knopf(seite, klasse) {
 	const videoGestoppt = await seite.evaluate(() => Array.from(document.querySelectorAll('#files_mediaviewer video')).every((v) => v.paused));
 	pruefe('Nach dem Schließen läuft kein Video weiter', videoGestoppt);
 
-	// --- Öffnen, wenn die Adresse schon auf dem Medium steht (4dd217d) ----------
-	// Eine neu geladene Betrachteradresse öffnet nichts von selbst (auch in
-	// main nicht: das Bündel lädt erst über die Dateiaktion). Öffnet man das
-	// Medium dann, darf der Router nicht über eine Navigation auf die eigene
-	// Stelle stolpern.
+	// --- Betrachteradresse (2.0.4) ------------------------------------------------
+	// Eine aufgerufene oder neu geladene Adresse #/files_mediaviewer/<Datei>
+	// öffnet das Medium, sobald die Dateiliste es kennt. Zurück/Vorwärts folgt
+	// der Betrachter, die Liste bleibt dabei im Ordner.
 	const vorAnker = konsole.length;
+	const ordnerJetzt = () => seite.evaluate(() => OCA.Files.App.fileList.getCurrentDirectory());
 	await seite.goto(BASIS + '/index.php/apps/files/?dir=%2F' + ORDNER + '#/files_mediaviewer/' + encodeURIComponent(BILD), { waitUntil: 'load' });
 	await seite.waitForSelector('#fileList tr[data-file="' + BILD + '"]', { timeout: 30000 }).catch(() => {});
-	await oeffne(seite, BILD);
 	await warteAufName(seite, BILD);
 	z = await betrachterZustand(seite);
-	pruefe('Öffnen bei bereits gesetzter Betrachteradresse, ohne Routerfehler', z.offen && z.name === BILD && z.geladen === true && konsole.length === vorAnker, JSON.stringify(z) + ' ' + konsole.slice(vorAnker).join(' | '));
+	pruefe('Direkteinstieg: Betrachteradresse öffnet das Medium von selbst', z.offen && z.obenauf && z.name === BILD && z.geladen === true, JSON.stringify(z));
+	await seite.reload({ waitUntil: 'load' });
+	await warteAufName(seite, BILD);
+	z = await betrachterZustand(seite);
+	pruefe('Neu laden: Medium öffnet wieder von selbst', z.offen && z.name === BILD && z.geladen === true, JSON.stringify(z));
+	await knopf(seite, 'icon__next');
+	await seite.waitForTimeout(900);
+	const zweites = (await betrachterZustand(seite)).name;
+	await seite.evaluate(() => history.back());
+	await warteAufName(seite, BILD);
+	z = await betrachterZustand(seite);
+	pruefe('Zurück: Betrachter zeigt wieder das erste Medium, Liste im Ordner', z.offen && z.name === BILD && await ordnerJetzt() === '/' + ORDNER, JSON.stringify(z));
+	await seite.evaluate(() => history.forward());
+	await warteAufName(seite, zweites);
+	z = await betrachterZustand(seite);
+	pruefe('Vorwärts: Betrachter zeigt wieder das zweite Medium', z.offen && z.name === zweites && zweites !== BILD, JSON.stringify(z));
 	await seite.keyboard.press('Escape');
+	await seite.waitForTimeout(800);
+	z = await betrachterZustand(seite);
+	pruefe('Escape schließt, Adresse ohne Anker', !z.offen && !/files_mediaviewer\/./.test(z.anker), JSON.stringify(z));
+	await seite.evaluate(() => history.back());
+	await warteAufName(seite, zweites);
+	z = await betrachterZustand(seite);
+	pruefe('Zurück nach dem Schließen öffnet das Medium wieder, Liste im Ordner', z.offen && z.name === zweites && await ordnerJetzt() === '/' + ORDNER, JSON.stringify(z));
+	await seite.keyboard.press('Escape');
+	await seite.waitForTimeout(800);
+	pruefe('Betrachteradresse ohne Routerfehler', konsole.length === vorAnker, konsole.slice(vorAnker).join(' | '));
 
 	// --- 400 px ------------------------------------------------------------------
 	const schmal = await kontext.newPage();

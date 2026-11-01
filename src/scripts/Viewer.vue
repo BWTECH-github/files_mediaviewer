@@ -180,6 +180,9 @@ export default {
 					reject('list length is 0');
 					return;
 				}
+				// Quelle merken (nicht reaktiv): wechselt sie, baut der
+				// Betrachter beim nächsten Medium neu auf
+				this.sourceFiles = OCA.Mediaviewer.files;
 				this.list = list;
 				this.$store.dispatch('setMaxIndex', list.length);
 				resolve(list);
@@ -192,90 +195,123 @@ export default {
 
 				return;
 			});
-		}
-	},
+		},
 
-	activated () {
-		// Swiper is a bit tricky
-		// when it comes to "this" context
-		const self = this;
+		_build () {
+			// Swiper is a bit tricky
+			// when it comes to "this" context
+			const self = this;
 
-		this.fetchFileList((fileList) => {
-			let initialSlide = _.findWhere(fileList, { name : this.$route.params.file });
-			initialSlide = _.findIndex(fileList, initialSlide);
+			this.fetchFileList((fileList) => {
+				let initialSlide = _.findWhere(fileList, { name : this.$route.params.file });
+				initialSlide = _.findIndex(fileList, initialSlide);
 
-			this.swiper = new this.$wiper('#files_mediaviewer .viewer__container', {
-				initialSlide,
-				resistance   : false,
-				slideClass   : 'viewer__slide',
-				wrapperClass : 'viewer__wrapper',
-				navigation : {
-					prevEl : '.viewer__control--prev',
-					nextEl : '.viewer__control--next',
-				},
-				on : {
-					init : function () {
-						// Sadly, there is no afterInit() method here :-|
-						// Will have to wait 250 MS
-						setTimeout(() => {
+				this.swiper = new this.$wiper('#files_mediaviewer .viewer__container', {
+					initialSlide,
+					resistance   : false,
+					slideClass   : 'viewer__slide',
+					wrapperClass : 'viewer__wrapper',
+					navigation : {
+						prevEl : '.viewer__control--prev',
+						nextEl : '.viewer__control--next',
+					},
+					on : {
+						init : function () {
+							// Sadly, there is no afterInit() method here :-|
+							// Will have to wait 250 MS
+							setTimeout(() => {
+								// Inzwischen geschlossen oder neu aufgebaut: der
+								// abgebaute Swiper kennt keine Folie mehr
+								if (this.destroyed) {
+									return;
+								}
+								self.$store.dispatch('setActive', {
+									activeIndex : this.activeIndex,
+									activeMediaItem : fileList[this.activeIndex],
+									activeHTMLElement : $('.swiper-slide-active .viewer__media')
+								});
+								self.$bus.$emit('swiper:init');
+							}, 250);
+						},
+						slideChangeTransitionStart : function() {
+							self.$bus.$emit('swiper:slideChangeTransitionStart');
+							self.$store.dispatch('setInTransition');
+							self.$store.dispatch('setReady');
+						},
+						slideChangeTransitionEnd : function () {
+							self.$store.dispatch('setTransitionEnd');
 							self.$store.dispatch('setActive', {
 								activeIndex : this.activeIndex,
 								activeMediaItem : fileList[this.activeIndex],
 								activeHTMLElement : $('.swiper-slide-active .viewer__media')
 							});
-							self.$bus.$emit('swiper:init');
-						}, 250);
-					},
-					slideChangeTransitionStart : function() {
-						self.$bus.$emit('swiper:slideChangeTransitionStart');
-						self.$store.dispatch('setInTransition');
-						self.$store.dispatch('setReady');
-					},
-					slideChangeTransitionEnd : function () {
-						self.$store.dispatch('setTransitionEnd');
-						self.$store.dispatch('setActive', {
-							activeIndex : this.activeIndex,
-							activeMediaItem : fileList[this.activeIndex],
-							activeHTMLElement : $('.swiper-slide-active .viewer__media')
-						});
-						// Nur wenn wirklich eine andere Datei gemeint ist: bei
-						// einem einzelnen Bild feuert der Wechsel auch fuer
-						// die Datei, auf der die Adresse schon steht, und
-						// vue-router meldet das als Fehler ("Avoided redundant
-						// navigation to current location").
-						const naechste = fileList[this.activeIndex].name;
-						if (self.$route.params.file !== naechste) {
-							self.$router.push({
-								params: {
-									file : naechste
-								}
-							});
+							// Nur wenn wirklich eine andere Datei gemeint ist: bei
+							// einem einzelnen Bild feuert der Wechsel auch fuer
+							// die Datei, auf der die Adresse schon steht, und
+							// vue-router meldet das als Fehler ("Avoided redundant
+							// navigation to current location").
+							const naechste = fileList[this.activeIndex].name;
+							if (self.$route.params.file !== naechste) {
+								self.$router.push({
+									params: {
+										file : naechste
+									}
+								});
+							}
+							self.$bus.$emit('swiper:slideChangeTransitionEnd');
+
+							// --- pause all playing videos
+							self.pauseAllVideos();
 						}
-						self.$bus.$emit('swiper:slideChangeTransitionEnd');
-
-						// --- pause all playing videos
-						self.pauseAllVideos();
 					}
-				}
-			});
+				});
 
-			this.$nextTick(() => {
-				// FF and IE11 Fix
-				this.swiper.update();
-				// Fokus in den Dialog, damit Tastatur und Sprachausgabe dort
-				// ankommen und nicht in der verdeckten Dateiliste bleiben
-				this.$el.focus({ preventScroll : true });
+				this.$nextTick(() => {
+					// FF and IE11 Fix
+					this.swiper.update();
+					// Fokus in den Dialog, damit Tastatur und Sprachausgabe dort
+					// ankommen und nicht in der verdeckten Dateiliste bleiben
+					this.$el.focus({ preventScroll : true });
+				});
 			});
-		});
+		},
+
+		_teardown () {
+			this.swiper.destroy();
+			this.$store.dispatch('resetAll');
+			this.list = null;
+			this.failed = {};
+		}
+	},
+
+	watch: {
+		// Zurück/Vorwärts zwischen zwei Medien: der offene Betrachter folgt der
+		// Adresse. Geschlossen oder im Aufbau liest _build die Route selbst.
+		'$route.params.file' (fileName) {
+			if (!fileName || !this.list || !this.swiper.initialized) {
+				return;
+			}
+			// Andere oder neu geladene Liste (Linkseite, anderer Ordner)
+			if (this.sourceFiles !== OCA.Mediaviewer.files) {
+				this._teardown();
+				this._build();
+				return;
+			}
+			const index = _.findIndex(this.list, { name : fileName });
+			if (index !== -1 && index !== this.swiper.activeIndex) {
+				this.swiper.slideTo(index);
+			}
+		}
+	},
+
+	activated () {
+		this._build();
 		document.addEventListener('keydown', this._trapFocus, true);
 	},
 	deactivated () {
 		document.removeEventListener('keydown', this._trapFocus, true);
 		const zuletzt = this.$store.state.activeMediaItem && this.$store.state.activeMediaItem.name;
-		this.swiper.destroy();
-		this.$store.dispatch('resetAll');
-		this.list = null;
-		this.failed = {};
+		this._teardown();
 		this._restoreFocus(zuletzt);
 	},
 
