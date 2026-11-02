@@ -77,18 +77,6 @@ export default {
 				first.focus();
 			}
 		},
-		// Nach dem Schließen zurück zur Zeile der zuletzt gezeigten Datei, damit
-		// Tastaturnutzer in der Liste dort weitermachen, wo sie waren.
-		_restoreFocus (name) {
-			if (!name) {
-				return;
-			}
-			const zeile = Array.from(document.querySelectorAll('#fileList tr[data-file]')).find((tr) => tr.getAttribute('data-file') === name);
-			const ziel = zeile ? (zeile.querySelector('a.name') || zeile) : null;
-			if (ziel && typeof ziel.focus === 'function') {
-				ziel.focus();
-			}
-		},
 		_closeViewer () {
 			// Handmade propagation stopper
 			if ($(event.target).hasClass('viewer__slide'))
@@ -310,12 +298,23 @@ export default {
 	},
 	deactivated () {
 		document.removeEventListener('keydown', this._trapFocus, true);
-		const zuletzt = this.$store.state.activeMediaItem && this.$store.state.activeMediaItem.name;
+		const zuletzt = this.$store.state.activeMediaItem;
 		this._teardown();
-		this._restoreFocus(zuletzt);
+		// Fokus zurück auf die Zeile in der Liste (init.js)
+		if (OCA.Mediaviewer.restoreFocus) {
+			OCA.Mediaviewer.restoreFocus(zuletzt);
+		}
 	},
 
 	mounted () {
+		// Gleiches Medium aus einer anderen Liste (followAddress in default.js)
+		this.$bus.$on('viewer:rebuild', () => {
+			if (this.list && this.swiper.initialized) {
+				this._teardown();
+				this._build();
+			}
+		});
+
 		this.$bus.$on('swiper:slideTo', (to) => {
 			if (to === 'next') {
 				this.swiper.slideNext();

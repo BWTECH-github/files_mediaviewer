@@ -15,8 +15,17 @@ export default {
 		ViewerControlsImage
 	},
 	mounted () {
-		// Keyboard controls for swiping and closing
-		$(document).on('keyup', (e) => {
+		// Pfeiltasten blättern beim Drücken, nicht beim Loslassen: Alt+Pfeil
+		// (Cmd+Pfeil am Mac) ist Zurück/Vorwärts des Browsers, und dem folgt der
+		// Betrachter über die Adresse. Beim Loslassen ist Alt oft schon oben,
+		// der Betrachter blätterte dann ein zweites Mal und legte dabei einen
+		// neuen Eintrag in der Chronik an.
+		$(document).on('keydown', (e) => {
+			// Gehaltene Taste: ein Schritt je Druck. jQuery reicht "repeat" nicht
+			// durch, deshalb vom ursprünglichen Ereignis.
+			if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || (e.originalEvent && e.originalEvent.repeat)) {
+				return;
+			}
 			// Pfeiltasten auf der Zeitleiste spulen das Video, sie blättern nicht
 			if (e.target && e.target.closest && e.target.closest('[role=slider], input, textarea, select, [contenteditable]')) {
 				return;

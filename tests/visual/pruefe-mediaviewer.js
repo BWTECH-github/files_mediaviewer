@@ -19,6 +19,10 @@
  *   - Betrachteradresse: Direkteinstieg und Neuladen öffnen das Medium von
  *     selbst, Zurück/Vorwärts folgt der Betrachter, die Liste bleibt im
  *     Ordner, ohne Routerfehler
+ *   - Alt+←/Alt+→ (Zurück/Vorwärts des Browsers): genau ein Schritt, keine
+ *     neuen Einträge in der Chronik, auch wenn Alt vor dem Pfeil losgelassen
+ *     wird (als Systemtaste über CDP; blättert der Browser dabei nicht selbst,
+ *     wird die Chronik von Hand bewegt)
  *   - öffentlicher Ordner-Link: Bild (obenauf) und Video
  *   - 400 px: Bedienleiste im Bild
  *   - keine Konsolenfehler
@@ -121,7 +125,9 @@ async function knopf(seite, klasse) {
 }
 
 (async () => {
-	const browser = await chromium.launch();
+	// Volles Chromium (neuer Headless-Modus), falls vorhanden: nur dort blättert
+	// Alt+Pfeil als Systemtaste selbst in der Chronik
+	const browser = await chromium.launch({ channel: 'chromium' }).catch(() => chromium.launch());
 	const kontext = await browser.newContext({ locale: 'de-DE', viewport: { width: 1440, height: 900 }, acceptDownloads: true });
 	const seite = await kontext.newPage();
 	const konsole = [];
@@ -329,6 +335,76 @@ async function knopf(seite, klasse) {
 	await seite.keyboard.press('Escape');
 	await seite.waitForTimeout(800);
 	pruefe('Betrachteradresse ohne Routerfehler', konsole.length === vorAnker, konsole.slice(vorAnker).join(' | '));
+
+	// --- Alt+←/Alt+→: Zurück/Vorwärts des Browsers --------------------------------
+	// Der Betrachter folgt der Adresse genau einen Schritt; die Pfeiltaste darf
+	// nicht noch einmal selbst blättern (sonst zwei Medien weit und ein neuer
+	// Eintrag in der Chronik, der die Vorwärts-Chronik kappt).
+	const vorAlt = konsole.length;
+	const cdp = await kontext.newCDPSession(seite);
+	const systemPfeil = async (links) => {
+		const [key, vk] = links ? ['ArrowLeft', 37] : ['ArrowRight', 39];
+		const taste = (k, code, v, typ) => cdp.send('Input.dispatchKeyEvent', { type: typ, modifiers: 1, key: k, code, windowsVirtualKeyCode: v, nativeVirtualKeyCode: v, isSystemKey: true });
+		await taste('Alt', 'AltLeft', 18, 'rawKeyDown');
+		await taste(key, key, vk, 'rawKeyDown');
+		await seite.waitForTimeout(150);
+		await taste(key, key, vk, 'keyUp');
+		await taste('Alt', 'AltLeft', 18, 'keyUp');
+	};
+	// Wie im Desktop-Browser: Alt gedrückt, Chronik bewegt, die Tasten kommen
+	// trotzdem bei der Seite an – wahlweise mit zuerst losgelassenem Alt
+	const nachgestellt = async (links, altZuerstLos) => {
+		const pfeil = links ? 'ArrowLeft' : 'ArrowRight';
+		await seite.keyboard.down('Alt');
+		await seite.keyboard.down(pfeil);
+		await seite.evaluate((l) => (l ? history.back() : history.forward()), links);
+		await seite.waitForTimeout(120);
+		await seite.keyboard.up(altZuerstLos ? 'Alt' : pfeil);
+		await seite.keyboard.up(altZuerstLos ? pfeil : 'Alt');
+	};
+	const zurueckOderVor = async (links) => {
+		const vorher = await seite.evaluate(() => window.__mvPops);
+		await systemPfeil(links);
+		await seite.waitForTimeout(1500);
+		if (await seite.evaluate(() => window.__mvPops) === vorher) {
+			await nachgestellt(links, false);
+		}
+		await seite.waitForTimeout(1500);
+	};
+	const lage = () => seite.evaluate(() => ({ laenge: history.length, anker: decodeURIComponent(location.hash) }));
+	await seite.evaluate(() => {
+		window.__mvPops = 0;
+		window.addEventListener('popstate', () => { window.__mvPops++; });
+	});
+	const medien = await seite.evaluate(() => OCA.Files.App.fileList.files
+		.filter((f) => OCA.Mediaviewer.app.config.mimetypes.indexOf(f.mimetype) !== -1)
+		.map((f) => f.name));
+	await oeffne(seite, medien[0]);
+	await warteAufName(seite, medien[0]);
+	for (let i = 1; i < 3; i++) {
+		await knopf(seite, 'icon__next');
+		await warteAufName(seite, medien[i]);
+	}
+	const vorTaste = await lage();
+	await zurueckOderVor(true);
+	z = await betrachterZustand(seite);
+	let nach = await lage();
+	pruefe('Alt+←: genau ein Medium zurück, Chronik gleich lang', z.offen && z.name === medien[1] && nach.anker === '#/files_mediaviewer/' + medien[1] && nach.laenge === vorTaste.laenge,
+		JSON.stringify({ erwartet: medien[1], name: z.name, vorher: vorTaste, nachher: nach }));
+	await zurueckOderVor(false);
+	z = await betrachterZustand(seite);
+	nach = await lage();
+	pruefe('Alt+→: genau ein Medium vor, Vorwärts-Chronik intakt', z.offen && z.name === medien[2] && nach.anker === '#/files_mediaviewer/' + medien[2] && nach.laenge === vorTaste.laenge,
+		JSON.stringify({ erwartet: medien[2], name: z.name, vorher: vorTaste, nachher: nach }));
+	await nachgestellt(true, true);
+	await seite.waitForTimeout(1500);
+	z = await betrachterZustand(seite);
+	nach = await lage();
+	pruefe('Alt+← mit zuerst losgelassenem Alt: genau ein Medium zurück', z.offen && z.name === medien[1] && nach.laenge === vorTaste.laenge,
+		JSON.stringify({ erwartet: medien[1], name: z.name, vorher: vorTaste, nachher: nach }));
+	await seite.keyboard.press('Escape');
+	await seite.waitForTimeout(800);
+	pruefe('Alt+Pfeil ohne Konsolenfehler', konsole.length === vorAlt, konsole.slice(vorAlt).join(' | '));
 
 	// --- 400 px ------------------------------------------------------------------
 	const schmal = await kontext.newPage();

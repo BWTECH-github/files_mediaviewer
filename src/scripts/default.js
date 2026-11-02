@@ -31,7 +31,9 @@ Vue.mixin(helper);
 Vue.directive('translate', directive);
 Vue.component('spinner', Spinner);
 
-Vue.prototype.$bus     = new Vue();
+const bus = new Vue();
+
+Vue.prototype.$bus     = bus;
 Vue.prototype.$wiper   = Swiper;
 Vue.prototype.$app     = app;
 
@@ -67,21 +69,39 @@ router.afterEach((to) => {
 	}
 });
 
+// Liste und Ordner, aus denen der Betrachter seine Medien hat
+let source = { list: null, dir: null };
+
 /**
  * Der Betrachter folgt der Adresse: Öffnen, Blättern und Schließen über
  * Zurück/Vorwärts, eine aufgerufene oder neu geladene Betrachteradresse.
  *
- * @param {Array} [files] Dateien der Liste, aus der das Medium kommt
+ * @param {OCA.Files.FileList} [fileList] Liste, aus der das Medium kommt
  */
-OCA.Mediaviewer.followAddress = (files) => {
+OCA.Mediaviewer.followAddress = (fileList) => {
 	const fileName = fileFromAddress();
+	const current = router.currentRoute.params.file || null;
+	if (fileName && fileList) {
+		const dir = fileList.getCurrentDirectory();
+		const otherSource = fileList !== source.list || dir !== source.dir;
+		// Gleicher Name aus derselben Liste: nichts zu tun, auch nicht, wenn
+		// sie im Hintergrund neu geladen hat. Aus einer anderen Liste oder
+		// einem anderen Ordner (Zurück/Vorwärts über einen Ordnerwechsel)
+		// zeigte der Betrachter sonst das Medium des alten Ordners.
+		if (fileName === current && !otherSource) {
+			return;
+		}
+		source = { list: fileList, dir };
+		OCA.Mediaviewer.files = fileList.files;
+		if (fileName === current) {
+			bus.$emit('viewer:rebuild');
+			return;
+		}
+	}
 	// Gleicher Stand: keine Navigation auf die eigene Stelle, die vue-router
 	// als Fehler meldet ("Avoided redundant navigation to current location")
-	if (fileName === (router.currentRoute.params.file || null)) {
+	else if (fileName === current) {
 		return;
-	}
-	if (fileName && files) {
-		OCA.Mediaviewer.files = files;
 	}
 	router.replace(fileName ? { name: 'Viewer', params: { file: fileName } } : '/');
 };

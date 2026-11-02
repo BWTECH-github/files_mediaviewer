@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [2.0.4] - 2026-11-01
+## [2.0.4] - 2026-11-02
 
 ### Behoben
 
@@ -12,8 +12,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
   (`#/files_mediaviewer/<Datei>`) öffnet das Medium von selbst, auch auf der
   Linkseite.
 - Zurück und Vorwärts im Browser öffnen, wechseln und schließen den
-  Betrachter; die Dateiliste bleibt dabei im Ordner.
-- Schließen entfernt den Betrachteranker aus der Adresse.
+  Betrachter; die Dateiliste bleibt dabei im Ordner. Auch über Alt+←/Alt+→
+  geht es genau ein Medium weiter, und über einen Ordner- oder
+  Ansichtswechsel zeigt der Betrachter das Medium aus dem Ordner der Adresse.
+- Schließen entfernt den Betrachteranker aus der Adresse. Wechselt die
+  Dateiliste den Ordner, etwa weil der aufgerufene fehlt, fällt er ebenfalls
+  weg.
+- Nach dem Schließen über Zurück steht der Fokus auch auf der Linkseite
+  wieder auf der Datei.
 
 ## [2.0.3] - 2026-10-29
 
