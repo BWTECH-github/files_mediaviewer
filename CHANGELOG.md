@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.5] - 2026-11-04
+
+### Geändert
+- Setzt owncloud.online 11.1 voraus.
+
 ## [2.0.4] - 2026-11-02
 
 ### Behoben
