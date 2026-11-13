@@ -22,6 +22,10 @@
 		outline: none;
 	}
 
+	// Dunkler Grund: der zentrale Fokusring des Kerns wird weiß (MASSSTAB 5).
+	// In Petrol (#00584a) kam er auf dem Schleier nur auf 2,5:1.
+	--oco-focus-color: var(--oco-surface, #fff);
+
 	// .9 statt .75: Bei 75 % schien die Dateiliste durch, und ihre Namen
 	// lagen sichtbar unter Namensschild und Zähler der Steuerleiste (Text über
 	// Text, gemessen bei 1024–1280 px).

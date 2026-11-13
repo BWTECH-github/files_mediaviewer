@@ -79,11 +79,12 @@
 		// dahinterliegenden Videoframe durchgehend >=3:1 erreicht (WCAG 1.4.11)
 		background: rgba(0, 0, 0, 0.7);
 
-		// Tastaturfokus der Zeitleiste (Schieberegler) sichtbar
+		// Tastaturfokus der Zeitleiste: den Ring zeichnet der Kern, die
+		// Leiste wird dabei höher. Sie reicht auf dem Telefon von Rand zu
+		// Rand – der Ring liegt innen, sonst schnitte das Fenster ihn ab.
 		&:focus-visible {
-			outline: 2px solid white;
-			outline-offset: 2px;
 			height: 15px;
+			--oco-focus-offset: var(--oco-focus-offset-feld, -2px);
 		}
 
 		// Juicebar
