@@ -9,3 +9,12 @@
 		opacity: 0 !important;
 	}
 }
+
+// Steuerleiste und Videoknopf erscheinen bei reduzierter Bewegung ohne
+// Überblenden; Vue sieht keine Übergangsdauer und schließt sofort ab.
+@media (prefers-reduced-motion: reduce) {
+	.fade-enter-active,
+	.fade-leave-active {
+		transition: none !important;
+	}
+}

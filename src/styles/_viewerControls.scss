@@ -79,6 +79,10 @@
 		// dahinterliegenden Videoframe durchgehend >=3:1 erreicht (WCAG 1.4.11)
 		background: rgba(0, 0, 0, 0.7);
 
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+
 		// Tastaturfokus der Zeitleiste: den Ring zeichnet der Kern, die
 		// Leiste wird dabei höher. Sie reicht auf dem Telefon von Rand zu
 		// Rand – der Ring liegt innen, sonst schnitte das Fenster ihn ab.
@@ -140,6 +144,10 @@
 	padding: {
 		left: 15px;
 		right: 15px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
 	}
 
 	// Steuerleiste bleibt voll deckend (kein Element-opacity-Dimm im Ruhezustand):

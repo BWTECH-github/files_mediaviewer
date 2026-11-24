@@ -42,6 +42,11 @@
 		&.swiper-slide-active {
 			.viewer__media--image {
 				transition: transform .25s ease-in-out;
+
+				// Zoomen und Drehen ohne Bewegung (prefers-reduced-motion)
+				@media (prefers-reduced-motion: reduce) {
+					transition: none;
+				}
 			}
 		}
 	}

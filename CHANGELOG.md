@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.7] - 2026-11-24
+
+### Behoben
+- Bei der Systemeinstellung „Bewegung reduzieren“ wechselt der Betrachter Bilder ohne Gleiten, zoomt und dreht ohne Animation und blendet die Steuerleiste ohne Übergang ein; der Ladekringel dreht langsamer.
+
 ## [2.0.6] - 2026-11-13
 
 ### Behoben

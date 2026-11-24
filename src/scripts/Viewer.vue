@@ -196,6 +196,12 @@ export default {
 
 				this.swiper = new this.$wiper('#files_mediaviewer .viewer__container', {
 					initialSlide,
+					// Bei reduzierter Bewegung springt die Folie, statt zu gleiten
+					// (300 ms ist die Vorgabe von Swiper). Mit 0 meldet Swiper das
+					// Ende des Wechsels sofort; per CSS abgeschaltet bliebe
+					// slideChangeTransitionEnd aus, und Adresse und Zustand
+					// blieben auf der vorigen Datei stehen.
+					speed        : window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 300,
 					resistance   : false,
 					slideClass   : 'viewer__slide',
 					wrapperClass : 'viewer__wrapper',

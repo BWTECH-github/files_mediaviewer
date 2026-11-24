@@ -11,6 +11,12 @@ $viewer__spinner__border-width : 6px;
 	z-index: 999;
 	text-indent: -9999px;
 
+	// Wie der Ladekringel des Kerns: bei reduzierter Bewegung langsamer statt
+	// stehend – ein stehender Ring liest sich als „hängt“.
+	@media (prefers-reduced-motion: reduce) {
+		animation-duration: 2.4s;
+	}
+
 	&:before {
 		content: "";
 		display: block;
