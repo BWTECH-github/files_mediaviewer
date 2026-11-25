@@ -1,0 +1,11 @@
+# Nicht ins Paket (git archive): Quellen und Werkzeug des Bündels js/files_mediaviewer.js
+/.drone.star export-ignore
+/.gitattributes export-ignore
+/.github export-ignore
+/.gitignore export-ignore
+/Makefile export-ignore
+/package-lock.json export-ignore
+/package.json export-ignore
+/src export-ignore
+/tests export-ignore
+/webpack.config.js export-ignore
