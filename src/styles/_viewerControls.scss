@@ -1,18 +1,41 @@
 .viewer__control {
+	// Symbolknopf auf dunklem Grund: 32 rund wie der Symbolknopf der hellen
+	// Flächen (MASSSTAB 3.1), Symbol 24 in der Mitte. Die allgemeinen
+	// Knopfregeln des Kerns (Kante, Polster, Radius 3) gelten hier nicht.
+	box-sizing: border-box;
 	cursor: pointer;
 	border: 0 none;
-	width: 24px;
-	height: 24px;
+	border-radius: 50%;
+	width: 32px;
+	min-width: 32px;
+	height: 32px;
+	min-height: 32px;
+	margin: 0;
+	padding: 0;
 	text-indent: -9999px;
+	overflow: hidden;
 	background: {
 		color: transparent;
-		size: contain;
+		size: 24px 24px;
+		position: center;
 		repeat: no-repeat;
-		cursor: pointer;
+	}
+
+	// Hover als helle Fläche, sofort und ohne Übergang. Weiß auf dem Schleier
+	// (Schwarz 90 %) mit 20 % Weiß darüber bleibt deutlich über 4,5:1.
+	&:hover:not([disabled]) {
+		background-color: rgba(255, 255, 255, .2);
+	}
+
+	// Der weiße Ring des Kerns (--oco-focus-color an .wrapper), außen um den Kreis
+	&:focus-visible {
+		outline: var(--oco-focus-width, 2px) solid var(--oco-focus-color, #fff);
+		outline-offset: var(--oco-focus-offset, 2px);
 	}
 
 	&[disabled] {
 		opacity: .25;
+		cursor: default;
 	}
 
 	&__nametag {
@@ -74,13 +97,21 @@
 		height: 10px;
 		width: 100%;
 		transform: translateY(-100%);
-		transition: height .25s;
 		// Track opaker, damit der Fortschrittsindikator unabhaengig vom
 		// dahinterliegenden Videoframe durchgehend >=3:1 erreicht (WCAG 1.4.11)
 		background: rgba(0, 0, 0, 0.7);
 
-		@media (prefers-reduced-motion: reduce) {
-			transition: none;
+		// Trefferfläche 24 hoch (WCAG 2.5.8), die Leiste selbst bleibt
+		// schmal: Klicks auf die Fläche gehen an die Leiste, die Stelle im
+		// Video ergibt sich nur aus der waagerechten Lage.
+		&::before {
+			content: '';
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 50%;
+			height: 24px;
+			transform: translateY(-50%);
 		}
 
 		// Tastaturfokus der Zeitleiste: den Ring zeichnet der Kern, die
@@ -163,6 +194,12 @@
 
 		> * {
 			margin: 0 5px;
+		}
+
+		// Die Knöpfe sind 32 statt 24 breit; mit 2 statt 5 Abstand bleibt
+		// die Leiste so breit wie vorher und passt auch bei 320 px
+		> .viewer__control {
+			margin: 0 2px;
 		}
 	}
 

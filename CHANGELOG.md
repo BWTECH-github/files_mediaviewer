@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.8] - 2026-11-25
+
+### Behoben
+- Steuerleiste: Die Knöpfe sind runde 32-px-Flächen, unter dem Zeiger hell hinterlegt, mit weißem Fokusring. Die Zeitleiste des Videos lässt sich auf 24 px Höhe treffen und wächst unter dem Zeiger ohne Verzögerung.
+
 ## [2.0.7] - 2026-11-24
 
 ### Behoben
